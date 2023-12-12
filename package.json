@@ -1,14 +1,14 @@
 {
   "name": "indexes-ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "indexes-ts will generate index.ts in targeted directories",
   "main": "index.js",
   "scripts": {
-    "dev": "indexes",
+    "dev": "indexes-ts",
     "test": "node ./bin/indexes-ts.js"
   },
   "bin": {
-    "indexes": "./bin/indexes-ts.js"
+    "indexes-ts": "./bin/indexes-ts.js"
   },
   "keywords": [
     "index",
