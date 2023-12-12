@@ -1,6 +1,6 @@
 {
   "name": "indexes-ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "indexes-ts will generate index.ts in targeted directories",
   "main": "index.js",
   "scripts": {

@@ -24,7 +24,7 @@ You can integrate this command to existing scripts in your `package.json` file. 
 ```json
 {
   "scripts": {
-    "dev": "indexes-ts & nuxt"
+    "dev": "indexes-ts & nuxt dev"
   }
 }
 ```
