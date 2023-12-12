@@ -1,0 +1,25 @@
+{
+  "name": "indexes-ts",
+  "version": "0.0.1",
+  "description": "indexes-ts will generate index.ts in targeted directories",
+  "main": "index.js",
+  "scripts": {
+    "dev": "indexes",
+    "test": "node ./bin/indexes-ts.js"
+  },
+  "bin": {
+    "indexes": "./bin/indexes-ts.js"
+  },
+  "keywords": [
+    "index",
+    "ts",
+    "directory"
+  ],
+  "author": "Antoine Guglielmi",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.5.2",
+    "fs": "^0.0.1-security",
+    "colors": "^1.4.0"
+  }
+}
