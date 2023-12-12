@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const chokidar = require('chokidar')
 const fs = require('fs')
 const colors = require('colors')
