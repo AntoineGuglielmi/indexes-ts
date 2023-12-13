@@ -45,9 +45,31 @@ const createIndex = (dir) => {
  * @param dir
  */
 const fillIndex = (dir) => {
-  const scanDir = fs.readdirSync(dir).filter((file) => {
-    return file !== 'index.ts'
+
+  /**
+   * Get the dir and the ignore list from the dirsToWatch array
+   * @type {{dir: string, ignore: string[]}}
+   */
+  const rawDir= {
+    dir: dir.dir ?? dir,
+    ignore: [].concat(dirsToWatch.find((dirToWatch) => {
+      const dirIsString = typeof dirToWatch === 'string'
+      return dirIsString ? dirToWatch === dir : dirToWatch.dir === dir
+    }).ignore ?? [])
+  }
+
+  /**
+   * Scan the dir and filter the files according to the ignore list
+   */
+  const scanDir = fs.readdirSync(rawDir.dir).filter((file) => {
+    return file !== 'index.ts' && !rawDir.ignore.some((ignore) => {
+      return file.match(`^${ignore}$`)
+    })
   })
+
+  /**
+   * Generate the export statements then write them in the index.ts file
+   */
   const lines = scanDir.map((file) => {
     return `export * from './${file.replace('.ts', '')}'`
   })
@@ -92,6 +114,10 @@ try {
    */
   dirsToWatch = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
 
+  const computedDirsToWatch = dirsToWatch.map((dir) => {
+    return typeof dir === 'string' ? dir : dir.dir
+  })
+
   /**
    * Check if the dirsToWatch is an array, if not throw an error
    */
@@ -110,9 +136,7 @@ try {
    * Initialize the watcher
    * @type {FSWatcher}
    */
-  const watcher = chokidar.watch(dirsToWatch, {
-    ignored: /[a-zA-Z].old.ts/,
-  })
+  const watcher = chokidar.watch(computedDirsToWatch)
 
   /**
    * Logic when a file is added or removed
