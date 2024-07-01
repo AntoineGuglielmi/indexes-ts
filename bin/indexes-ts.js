@@ -45,26 +45,30 @@ const createIndex = (dir) => {
  * @param dir
  */
 const fillIndex = (dir) => {
-
   /**
    * Get the dir and the ignore list from the dirsToWatch array
    * @type {{dir: string, ignore: string[]}}
    */
-  const rawDir= {
+  const rawDir = {
     dir: dir.dir ?? dir,
-    ignore: [].concat(dirsToWatch.find((dirToWatch) => {
-      const dirIsString = typeof dirToWatch === 'string'
-      return dirIsString ? dirToWatch === dir : dirToWatch.dir === dir
-    }).ignore ?? [])
+    ignore: [].concat(
+      dirsToWatch.find((dirToWatch) => {
+        const dirIsString = typeof dirToWatch === 'string'
+        return dirIsString ? dirToWatch === dir : dirToWatch.dir === dir
+      }).ignore ?? [],
+    ),
   }
 
   /**
    * Scan the dir and filter the files according to the ignore list
    */
   const scanDir = fs.readdirSync(rawDir.dir).filter((file) => {
-    return file !== 'index.ts' && !rawDir.ignore.some((ignore) => {
-      return file.match(`^${ignore}$`)
-    })
+    return (
+      file !== 'index.ts' &&
+      !rawDir.ignore.some((ignore) => {
+        return file.match(`^${ignore}$`)
+      })
+    )
   })
 
   /**
@@ -82,7 +86,7 @@ const fillIndex = (dir) => {
  * @returns {`./${string}`}
  */
 const getDirFromPath = (path) => {
-  return `./${path.split('/').slice(0, 1)}`
+  return `./${path.split('/').slice(0, -1).join('/')}`
 }
 
 /**
@@ -100,7 +104,6 @@ const generateIndex = (path) => {
  * The logic
  */
 try {
-
   /**
    * Check if the json config file exists
    */
@@ -129,7 +132,9 @@ try {
    * Check if the dirsToWatch array is empty, if so, log a message
    */
   if (dirsToWatch.length === 0) {
-    console.log(`${colors.green(packageName)} - waiting for directories to watch`)
+    console.log(
+      `${colors.green(packageName)} - waiting for directories to watch`,
+    )
   }
 
   /**
@@ -141,21 +146,20 @@ try {
   /**
    * Logic when a file is added or removed
    */
-  watcher.on('add', (path) => {
-    console.log(`${colors.green(packageName)} - Added ${path} file`)
-    const dir = getDirFromPath(path)
-    generateIndex(dir)
-  }).on('unlink', (path) => {
-    console.log(`${colors.green(packageName)} - Removed ${path} file`)
-    const dir = getDirFromPath(path)
-    generateIndex(dir)
-  })
-
+  watcher
+    .on('add', (path) => {
+      console.log(`${colors.green(packageName)} - Added ${path} file`)
+      const dir = getDirFromPath(path)
+      generateIndex(dir)
+    })
+    .on('unlink', (path) => {
+      console.log(`${colors.green(packageName)} - Removed ${path} file`)
+      const dir = getDirFromPath(path)
+      generateIndex(dir)
+    })
 } catch (err) {
-
   /**
    * Log the error if something went wrong
    */
   console.log(`${colors.red(packageName)} - ${err.message}`)
-
 }
